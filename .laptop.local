@@ -1,0 +1,27 @@
+#!/bin/sh
+
+brew_install_or_upgrade 'caskroom/cask/brew-cask'
+
+brew cask install adobe-creative-cloud
+brew cask install battle-net
+brew cask install controlplane
+brew cask install dropbox
+brew cask install firefox
+brew cask install google-chrome
+brew cask install hipchat
+brew cask install imageoptim
+brew cask install iterm2
+brew cask install java
+brew cask install little-snitch
+brew cask install monotype-skyfonts
+brew cask install opera
+brew cask install sequel-pro
+brew cask install sketchup
+brew cask install skype
+brew cask install silverlight
+brew cask install sourcetree
+brew cask install spotify
+brew cask install sublime-text
+brew cask install vagrant
+brew cask install virtualbox
+brew cask install viscosity
