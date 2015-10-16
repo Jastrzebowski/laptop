@@ -13,7 +13,7 @@ fancy_echo() {
 
 append_to_zshrc() {
   local text="$1" zshrc
-  local skip_new_line="$2"
+  local skip_new_line="${2:-0}"
 
   if [ -w "$HOME/.zshrc.local" ]; then
     zshrc="$HOME/.zshrc.local"
@@ -48,7 +48,7 @@ append_to_zshrc 'export PATH="$HOME/.bin:$PATH"'
 case "$SHELL" in
   */zsh) : ;;
   *)
-    fancy_echo "Changing your shell to zsh ..."
+    fancy_echo "Changing your shell to zsh…"
       chsh -s "$(which zsh)"
     ;;
 esac
@@ -56,13 +56,13 @@ esac
 brew_install_or_upgrade() {
   if brew_is_installed "$1"; then
     if brew_is_upgradable "$1"; then
-      fancy_echo "Upgrading %s ..." "$1"
+      fancy_echo "Upgrading %s…" "$1"
       brew upgrade "$@"
     else
-      fancy_echo "Already using the latest version of %s. Skipping ..." "$1"
+      fancy_echo "Already using the latest version of %s. Skipping…" "$1"
     fi
   else
-    fancy_echo "Installing %s ..." "$1"
+    fancy_echo "Installing %s…" "$1"
     brew install "$@"
   fi
 }
@@ -104,17 +104,17 @@ brew_launchctl_restart() {
 
 gem_install_or_update() {
   if gem list "$1" --installed > /dev/null; then
-    fancy_echo "Updating %s ..." "$1"
+    fancy_echo "Updating %s…" "$1"
     gem update "$@"
   else
-    fancy_echo "Installing %s ..." "$1"
+    fancy_echo "Installing %s…" "$1"
     gem install "$@"
     rbenv rehash
   fi
 }
 
 if ! command -v brew >/dev/null; then
-  fancy_echo "Installing Homebrew ..."
+  fancy_echo "Installing Homebrew…"
     curl -fsS \
       'https://raw.githubusercontent.com/Homebrew/install/master/install' | ruby
 
@@ -125,32 +125,26 @@ if ! command -v brew >/dev/null; then
 
     export PATH="/usr/local/bin:$PATH"
 else
-  fancy_echo "Homebrew already installed. Skipping ..."
+  fancy_echo "Homebrew already installed. Skipping…"
 fi
 
-fancy_echo "Updating Homebrew formulas ..."
+fancy_echo "Updating Homebrew formulas…"
 brew update
 
+brew_install_or_upgrade 'zsh'
 brew_install_or_upgrade 'git'
-brew_install_or_upgrade 'postgres'
-brew_launchctl_restart 'postgresql'
-brew_install_or_upgrade 'redis'
-brew_launchctl_restart 'redis'
-brew_install_or_upgrade 'the_silver_searcher'
 brew_install_or_upgrade 'vim'
+brew_install_or_upgrade 'wget'
 brew_install_or_upgrade 'ctags'
 brew_install_or_upgrade 'tmux'
-brew_install_or_upgrade 'reattach-to-user-namespace'
-brew_install_or_upgrade 'imagemagick'
-brew_install_or_upgrade 'qt'
-brew_install_or_upgrade 'gh'
-brew_install_or_upgrade 'node'
+brew_install_or_upgrade 'tmux-cssh'
+brew_install_or_upgrade 'nvm'
 
 brew_install_or_upgrade 'rbenv'
 brew_install_or_upgrade 'ruby-build'
 
 # shellcheck disable=SC2016
-append_to_zshrc 'eval "$(rbenv init - zsh --no-rehash)"' 1
+append_to_zshrc 'eval "$(rbenv init - --no-rehash zsh)"' 1
 
 brew_install_or_upgrade 'openssl'
 brew unlink openssl && brew link openssl --force
@@ -171,7 +165,7 @@ gem update --system
 
 gem_install_or_update 'bundler'
 
-fancy_echo "Configuring Bundler ..."
+fancy_echo "Configuring Bundler…"
   number_of_cores=$(sysctl -n hw.ncpu)
   bundle config --global jobs $((number_of_cores - 1))
 
