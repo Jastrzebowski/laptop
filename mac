@@ -98,6 +98,7 @@ brew update
 brew bundle --file=- <<EOF
 tap "thoughtbot/formulae"
 tap "homebrew/services"
+tap "caskroom/cask"
 # Unix
 brew "ctags"
 brew "git"
